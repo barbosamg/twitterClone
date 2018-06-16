@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario'])) {
 ?>
 
 <!DOCTYPE HTML>
-<html lang="pt-br">
+<html lang="pt-br"> 
 	<head>
 		<meta charset="UTF-8">
 
@@ -16,7 +16,7 @@ if (!isset($_SESSION['usuario'])) {
 		<!-- jquery - link cdn -->
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
-		<!-- bootstrap - link cdn -->
+		<!-- bootstrap - link cdn ->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 		<script type="text/javascript">
