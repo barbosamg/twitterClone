@@ -15,7 +15,9 @@
 
     $sql = "SELECT DATE_FORMAT(t.data_inclusao, '%d %b %Y %T') AS data_inclusao_for, t.tweet, u.usuario FROM tweet AS t ";
     $sql.= " INNER JOIN usuario as u ON t.id_usuario = u.id";
-    $sql.= " WHERE id_usuario = $id_usuario ORDER BY data_inclusao_for DESC";
+    $sql.= " WHERE id_usuario = $id_usuario ";  
+    $sql.= " OR id_usuario IN (SELECT seguindo_id_usuario FROM usuarios_seguidores where id_usuario = $id_usuario)";
+    $sql.= " ORDER BY data_inclusao_for DESC";
     //echo $sql;
     $resultado_id = mysqli_query($link, $sql);
 

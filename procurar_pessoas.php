@@ -4,6 +4,35 @@ session_start();
 if (!isset($_SESSION['usuario'])) {
     header('Location: index.php?erro=1');
 }
+
+require_once 'db.php';
+
+$objDb = new db();
+$link = $objDb->conecta_mysql();
+
+$id_usuario = $_SESSION['id_usuario'];
+
+//qtd de tweets
+$sql = "SELECT count(*) AS qtd_tweets FROM tweet WHERE id_usuario = $id_usuario";
+$resultado_id = mysqli_query($link, $sql);
+$qtd_tweets = 0;
+if ($resultado_id) {
+    $registro = mysqli_fetch_array($resultado_id, MYSQLI_ASSOC);
+    $qtd_tweets = $registro['qtd_tweets'];
+} else {
+    echo "Houve um erro na execucao na query";
+}
+
+//qtd de seguidores
+$sql = "SELECT count(*) AS qtd_seguidores FROM usuarios_seguidores WHERE seguindo_id_usuario = $id_usuario";
+$resultado_id = mysqli_query($link, $sql);
+$qtd_seguidores = 0;
+if ($resultado_id) {
+    $registro = mysqli_fetch_array($resultado_id, MYSQLI_ASSOC);
+    $qtd_seguidores = $registro['qtd_seguidores'];
+} else {
+    echo "Houve um erro na execucao na query";
+}
 ?>
 
 <!DOCTYPE HTML>
@@ -31,6 +60,36 @@ if (!isset($_SESSION['usuario'])) {
 							data: $('#form_procurar_pessoas').serialize(),
 							success: function(data){
 								$('#pessoas').html(data)
+								$('.btn_seguir').click(function() {
+
+									var id_usuario = $(this).data('id_usuario');
+
+									$('#btn_seguir_'+id_usuario).hide();
+									$('#btn_deixar_seguir_'+id_usuario).show();
+									$.ajax({
+										url: 'seguir.php',
+										method: 'post',
+										data: {seguir_id_usuario: id_usuario},
+										success: function(data){
+											alert('Registro efetuado com sucesso')
+										}
+									})
+								})
+								$('.btn_deixar_seguir').click(function(){
+									var id_usuario = $(this).data('id_usuario');
+
+									$('#btn_seguir_'+id_usuario).show();
+									$('#btn_deixar_seguir_'+id_usuario).hide();
+
+									$.ajax({
+										url: 'deixar_seguir.php',
+										method: 'post',
+										data: {deixar_seguir_id_usuario: id_usuario},
+										success: function(data){
+											alert('Registro removido com sucesso')
+										}
+									})
+								})
 							}
 						})
 					}
@@ -74,11 +133,11 @@ if (!isset($_SESSION['usuario'])) {
 							<hr/>
 							<div class="col-md-6">
 								TWEETS<br>
-								1
+								<?=$qtd_tweets?>
 							</div>
 							<div class="col-md-6">
 								SEGUIDORES<br>
-								1
+								<?= $qtd_seguidores ?>
 							</div>
 						</div>
 					</div>
